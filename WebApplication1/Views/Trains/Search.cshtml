@@ -1,0 +1,116 @@
+﻿@using System.Web.UI.WebControls
+@model IEnumerable<WebApplication1.Models.Train>
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2>Search</h2>
+
+
+@using (Html.BeginForm("Search", "Trains"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Trains</h4>
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+
+        <div class="form-group">
+            @Html.Label("Where am I: ", new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.DropDownList("From", ViewBag.From as SelectList, "Select city", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Destination: ", new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.DropDownList("To", ViewBag.To as SelectList, "Select city", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Date: ", htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.Editor("Date", new { htmlAttributes = new { @class = "form-control date-picker", PlaceHolder = "What's the date of departure?" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Hour: ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("Hour", new { htmlAttributes = new { @class = "form-control ", PlaceHolder = "What time would you like to go?" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Show" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Departure Date
+            </th>
+            <th>
+                Arrival Date
+            </th>
+            <th>
+                Start Time [hh:mm]
+            </th>
+            <th>
+                End Time [hh:mm]
+            </th>
+            <th>
+                Time Travel [hh:mm]
+            </th>
+        </tr>
+
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.StartDate.ToString("MM/dd/yyyy")
+                    </td>
+                    <td>
+                        @item.EndDate.ToString("MM/dd/yyyy")
+                    </td>
+                    <td>
+                        @item.StartTime.ToString("hh\\:mm")
+                    </td>
+                    <td>
+                        @item.EndTime.ToString("hh\\:mm")
+                    </td>
+                    <td>
+                        @((item.EndTime - item.StartTime).ToString("hh\\:mm"))
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="@Url.Content("~/Scripts/jquery-1.10.2.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.11.4.min.js")"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            // This will make every element with the class "date-picker" into a DatePicker element
+            $('.date-picker').datepicker();
+        })
+    </script>
+}
